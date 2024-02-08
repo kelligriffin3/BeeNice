@@ -1,11 +1,11 @@
 from flask import Flask, render_template
+from data_handler import test_data_handler
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello():
-    return '<h1>Hello, World!</h1>'
+curr_comments = ["Sample Comment 1", "Sample Comment 2", "Sample Comment 3"]
 
-@app.route('/home/')
+@app.route('/')
 def home():
-    return render_template('BeeNice.html')
+    # data = test_data_handler()
+    return render_template('BeeNice.html', comments=curr_comments)
