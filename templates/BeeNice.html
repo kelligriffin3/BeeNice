@@ -10,13 +10,17 @@
   </head>
   <body>
 	<h1>BeeNICE</h1>
+  <p>Example comment thread under a news article</p>
     <div class="box">
       {% for comment in comments %}
         <div>{{ comment }}</div>
       {% endfor %}
       </div>
       <br>
-    <input type="text">
-    <button onclick="postbtn()">Post Comment</button>
+    <input type="text" id="commentInput">
+    <button onclick="postComment()">Post Comment</button>
+    <br>
+    <button onclick="clearComments()">Clear Comments</button>
+
   </body>
 </html>
