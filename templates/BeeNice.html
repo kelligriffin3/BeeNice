@@ -22,16 +22,16 @@
       {% if curr_sentiment == False %}
         <p>BeeNICE: Your comment was detected as being mean</p>
         <b>Consider these ways to rewrite your sentence:</b>
-        <ol>
+        <div>
           {% for c in alt_comments %}
-            <li>{{ c }}</li>
+            <p>{{ c }}</p>
           {% endfor %}
-        </ol>
+        </div>
       {% endif %}
     </div>
   </div>
   <br>
-  <input type="text" id="commentInput">
+  <input type="text" id="commentInput" class="text-box">
   <button onclick="postComment()">Post Comment</button>
   <br>
   <br>

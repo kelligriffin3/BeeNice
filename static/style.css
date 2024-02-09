@@ -14,3 +14,9 @@
 .comments {
     margin-right: 20px; /* Adjust margin as needed */
   }
+
+.text-box {
+    width: 30%; /* Adjust width as needed */
+    min-height: 30px; /* Minimum height of the text box */
+    resize: none; /* Disable user resizing */
+}
