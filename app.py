@@ -1,16 +1,17 @@
 from flask import Flask, render_template, request, jsonify
-from data_handler import is_nice, get_alt_comments
+from data_handler import is_nice, get_alt_comments, summarize_thread
 
 app = Flask(__name__)
 
 curr_comments = []
 alt_comments = []
-curr_sentiment = None # True if nice, False if mean
+curr_sentiment = None # True if nice, False if mean 
+summary = ""
 
 @app.route('/')
 def home():
-    #comms = test_data_handler(curr_comments)
-    return render_template('BeeNice.html', comments=curr_comments, curr_sentiment=curr_sentiment, alt_comments=alt_comments)
+
+    return render_template('BeeNice.html', comments=curr_comments, num_comments = len(curr_comments), curr_sentiment=curr_sentiment, alt_comments=alt_comments, summary=summary)
 
 @app.route('/add_comment', methods=['POST'])
 def add_comment():
@@ -34,8 +35,19 @@ def add_comment():
 @app.route('/clear_comments', methods=['DELETE'])
 def clear_comments():
     data = request.get_json()
+    global summary 
+    summary = ""
     curr_comments.clear()
-    return jsonify({'message': 'Comment added successfully'}), 200
+    return jsonify({'message': 'Comments cleared successfully'}), 200
+
+@app.route('/summarize_comments', methods=['POST'])
+def summarize_comments():
+    data = request.get_json()
+    global summary
+    
+    summary = summarize_thread(curr_comments)
+
+    return jsonify({'message': 'Thread summarized successfully'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

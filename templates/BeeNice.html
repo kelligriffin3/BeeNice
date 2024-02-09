@@ -36,5 +36,15 @@
   <br>
   <br>
   <button onclick="clearComments()">Clear Comments</button>
+    <!-- Add summary of current thread -->
+    {% if num_comments > 1 %}
+    <button onclick="summarizeComments()">Summarize Thread</button>
+    {% endif %}
+    {% if summary != "" %}
+      <br>
+      <b>Summary of comment thread</b>
+      <p>{{ summary }}</p>
+
+    {% endif %}
 </body>
 </html>

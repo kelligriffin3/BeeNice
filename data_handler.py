@@ -30,3 +30,23 @@ def get_alt_comments(comment):
     response = completion.choices[0].message.content.split("\n")
 
     return response
+
+def summarize_thread(comments): # list of strings
+
+    OPENAI_API_KEY = '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'
+    client = OpenAI(api_key = OPENAI_API_KEY)
+
+    # Concatenate comments into a single string
+    comments_string = "\n".join(comments)
+
+    completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are moderating a comment section of a controversal news article. Summarize the sentiment of the following comments"},
+        {"role": "user", "content": comments_string} 
+    ]
+    )
+
+    response = completion.choices[0].message.content
+
+    return response
