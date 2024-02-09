@@ -1,4 +1,5 @@
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from openai import OpenAI
 
 # Checks the sentiment of a comment
 # Returns true if positive sentiment
@@ -15,15 +16,17 @@ def is_nice(comment):
     
 def get_alt_comments(comment):
 
-    return ["test 1", "test2"]
+    OPENAI_API_KEY = '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'
+    client = OpenAI(api_key = OPENAI_API_KEY)
 
+    completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are moderating a comment section of a controversal news article. Give a comma separated list of 2-3 ways of rewriting the comment. The comment should be more polite yet still retain the same sentiment an ideas."},
+        {"role": "user", "content": comment}
+    ]
+    )
 
-def test_data_handler(comms):
-    comms_new = []
-    for c in comms:
-        if c == "tester":
-            comms_new.append("YAS")
-        else:
-            comms_new.append(c + ":)")
+    response = completion.choices[0].message.content.split("\n")
 
-    return comms_new
+    return response

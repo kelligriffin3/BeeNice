@@ -20,17 +20,20 @@
     <div class="sentiment">
       <!-- Display sentiment of most recent comment -->
       {% if curr_sentiment == False %}
-        <p>BeeNICE: comment was detected as being mean</p>
-        <b>Consider these ways to rewrite your sentence</b>
-        {% for c in alt_comments %}
-          <div>{{ c }}</div>
-        {% endfor %}
+        <p>BeeNICE: Your comment was detected as being mean</p>
+        <b>Consider these ways to rewrite your sentence:</b>
+        <ol>
+          {% for c in alt_comments %}
+            <li>{{ c }}</li>
+          {% endfor %}
+        </ol>
       {% endif %}
     </div>
   </div>
   <br>
   <input type="text" id="commentInput">
   <button onclick="postComment()">Post Comment</button>
+  <br>
   <br>
   <button onclick="clearComments()">Clear Comments</button>
 </body>
