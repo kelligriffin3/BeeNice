@@ -1,26 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bee NICE</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-  </head>
-  <body>
-	<h1>BeeNICE</h1>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Bee NICE</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+  <h1>BeeNICE</h1>
   <p>Example comment thread under a news article</p>
-    <div class="box">
+  <div class="container">
+    <div class="comments box">
       {% for comment in comments %}
         <div>{{ comment }}</div>
       {% endfor %}
-      </div>
-      <br>
-    <input type="text" id="commentInput">
-    <button onclick="postComment()">Post Comment</button>
-    <br>
-    <button onclick="clearComments()">Clear Comments</button>
-
-  </body>
+    </div>
+    <div class="sentiment">
+      <!-- Display sentiment of most recent comment -->
+      {% if curr_sentiment == False %}
+        <p>BeeNICE: comment was detected as being mean</p>
+        <b>Consider these ways to rewrite your sentence</b>
+        {% for c in alt_comments %}
+          <div>{{ c }}</div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <br>
+  <input type="text" id="commentInput">
+  <button onclick="postComment()">Post Comment</button>
+  <br>
+  <button onclick="clearComments()">Clear Comments</button>
+</body>
 </html>

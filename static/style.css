@@ -5,3 +5,12 @@
     padding: 10px;
     margin: 10px;
   }
+
+.container {
+    display: flex;
+    align-items: flex-start;
+  }
+
+.comments {
+    margin-right: 20px; /* Adjust margin as needed */
+  }
