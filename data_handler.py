@@ -1,5 +1,13 @@
 from pysentimiento import create_analyzer
 from openai import OpenAI
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Use the environment variable for API key
+api_key = os.getenv("OPENAI_API_KEY")
 
 # Checks the sentiment of a comment
 # Returns true if positive sentiment
@@ -20,8 +28,7 @@ def is_nice(comment):
     
 def get_alt_comments(comment):
 
-    OPENAI_API_KEY = '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'
-    client = OpenAI(api_key = OPENAI_API_KEY)
+    client = OpenAI(api_key=api_key)
 
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
@@ -35,10 +42,9 @@ def get_alt_comments(comment):
 
     return response
 
-def summarize_thread(comments): # list of strings
+def summarize_thread(comments):
 
-    OPENAI_API_KEY = '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'
-    client = OpenAI(api_key = OPENAI_API_KEY)
+    client = OpenAI(api_key=api_key)
 
     # Concatenate comments into a single string
     comments_string = "\n".join(comments)
