@@ -1,18 +1,22 @@
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from pysentimiento import create_analyzer
 from openai import OpenAI
 
 # Checks the sentiment of a comment
 # Returns true if positive sentiment
 # Returns falase if negative sentment
+# Analyzer from Hugging Face: https://github.com/pysentimiento/pysentimiento
 def is_nice(comment):
 
-    sid_obj = SentimentIntensityAnalyzer()
-    sentiment_dict = sid_obj.polarity_scores(comment)
+    emotion_analyzer = create_analyzer(task="hate_speech", lang="en")
+    res = emotion_analyzer.predict(comment).probas
+    hateful = res["hateful"]
+    targeted = res["targeted"]
+    aggressive = res["aggressive"]
 
-    if sentiment_dict['compound'] >= 0.05 :
-        return True
-    else:
+    if hateful > 0.1 or targeted > 0.1 or aggressive > 0.1:
         return False
+    else:
+        return True
     
 def get_alt_comments(comment):
 
