@@ -2,26 +2,33 @@ from pysentimiento import create_analyzer
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import requests
 
 # Load environment variables from .env file
 load_dotenv()
 
 # Use the environment variable for API key
 api_key = os.getenv("OPENAI_API_KEY")
+huggingface_api_key = os.getenv("HUGGING_FACE_API_TOKEN")
+
+API_URL = "https://api-inference.huggingface.co/models/KoalaAI/OffensiveSpeechDetector"
+headers = {"Authorization": f"Bearer {huggingface_api_key}"}
+
+def query(payload):
+    response = requests.post(API_URL, headers=headers, json=payload)
+    return response.json()
 
 # Checks the sentiment of a comment
 # Returns true if positive sentiment
 # Returns falase if negative sentment
-# Analyzer from Hugging Face: https://github.com/pysentimiento/pysentimiento
+# Analyzer from Hugging Face: https://huggingface.co/KoalaAI/OffensiveSpeechDetector
 def is_nice(comment):
 
-    emotion_analyzer = create_analyzer(task="hate_speech", lang="en")
-    res = emotion_analyzer.predict(comment).probas
-    hateful = res["hateful"]
-    targeted = res["targeted"]
-    aggressive = res["aggressive"]
+    output = query({
+    "inputs": comment,})
 
-    if hateful > 0.1 or targeted > 0.1 or aggressive > 0.1:
+    offensive_score = [item['score'] for sublist in output for item in sublist if item['label'] == 'offensive'][0]
+    if offensive_score > 0.6:
         return False
     else:
         return True
@@ -33,7 +40,7 @@ def get_alt_comments(comment):
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": "You are moderating a comment section of a controversal news article. Give a comma separated list of 2-3 ways of rewriting the comment. The comment should be more polite yet still retain the same sentiment an ideas."},
+        {"role": "system", "content": "You are moderating a comment section of a controversal news article. Give a comma separated list of 2-3 ways of rewriting the comment. The comment should be more polite yet still retain the same sentiment and ideas."},
         {"role": "user", "content": comment}
     ]
     )
