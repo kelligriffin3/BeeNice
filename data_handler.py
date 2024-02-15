@@ -28,7 +28,7 @@ def is_nice(comment):
     "inputs": comment,})
 
     offensive_score = [item['score'] for sublist in output for item in sublist if item['label'] == 'offensive'][0]
-    if offensive_score > 0.6:
+    if offensive_score > 0.5:
         return False
     else:
         return True
