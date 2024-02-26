@@ -18,25 +18,37 @@ perspective_api_key = os.getenv("PERSPECTIVE_API_KEY")
 API_URL = "https://api-inference.huggingface.co/models/KoalaAI/OffensiveSpeechDetector"
 headers = {"Authorization": f"Bearer {huggingface_api_key}"}
 
-# Helper function for Hugging face sentiment analyzer
-def query(payload):
-    response = requests.post(API_URL, headers=headers, json=payload)
-    return response.json()
+# Initialize client for perspectiveAPI analyzer
+client = discovery.build(
+  "commentanalyzer",
+  "v1alpha1",
+  developerKey=perspective_api_key,
+  discoveryServiceUrl="https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1",
+  static_discovery=False,
+)
 
 # Checks the sentiment of a comment
 # Input: string
 # Output: True if positive sentiement, else False
-# Analyzer from Hugging Face: https://huggingface.co/KoalaAI/OffensiveSpeechDetector
 def is_nice(comment):
 
-    output = query({
-    "inputs": comment,})
+    request_dict = {'TOXICITY': {}}
 
-    offensive_score = [item['score'] for sublist in output for item in sublist if item['label'] == 'offensive'][0]
-    if offensive_score > 0.5:
+    analyze_request = {
+        'comment': { 'text': comment },
+        'requestedAttributes': request_dict
+    }
+
+    response = client.comments().analyze(body=analyze_request).execute()
+
+    tox_score = response["attributeScores"]["TOXICITY"]['summaryScore']['value']
+    print(tox_score)
+
+    if tox_score > 0.5:
         return False
     else:
         return True
+
     
 # Generate alternative comments using LLM
 # Input: string
