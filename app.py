@@ -13,6 +13,11 @@ def home():
 
     return render_template('BeeNice.html', comments=curr_comments, num_comments = len(curr_comments), curr_sentiment=curr_sentiment, alt_comments=alt_comments, summary=summary)
 
+@app.route('/settings')
+def settings():
+
+    return render_template('Settings.html')
+
 @app.route('/add_comment', methods=['POST'])
 def add_comment():
     global curr_sentiment
