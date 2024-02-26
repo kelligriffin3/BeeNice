@@ -1,26 +1,31 @@
 from pysentimiento import create_analyzer
 from openai import OpenAI
 from dotenv import load_dotenv
+from googleapiclient import discovery
 import os
 import requests
+import json
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Use the environment variable for API key
+# Use the environment variable for API keys
 api_key = os.getenv("OPENAI_API_KEY")
 huggingface_api_key = os.getenv("HUGGING_FACE_API_TOKEN")
+perspective_api_key = os.getenv("PERSPECTIVE_API_KEY")
 
+# For hugging face api keys
 API_URL = "https://api-inference.huggingface.co/models/KoalaAI/OffensiveSpeechDetector"
 headers = {"Authorization": f"Bearer {huggingface_api_key}"}
 
+# Helper function for Hugging face sentiment analyzer
 def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.json()
 
 # Checks the sentiment of a comment
-# Returns true if positive sentiment
-# Returns falase if negative sentment
+# Input: string
+# Output: True if positive sentiement, else False
 # Analyzer from Hugging Face: https://huggingface.co/KoalaAI/OffensiveSpeechDetector
 def is_nice(comment):
 
@@ -33,6 +38,9 @@ def is_nice(comment):
     else:
         return True
     
+# Generate alternative comments using LLM
+# Input: string
+# Output: list of strings (each element is alternative repsonse)
 def get_alt_comments(comment):
 
     client = OpenAI(api_key=api_key)
@@ -49,6 +57,9 @@ def get_alt_comments(comment):
 
     return response
 
+# Summarize main points of current comment threat
+# Input: list of comments
+# Output: string
 def summarize_thread(comments):
 
     client = OpenAI(api_key=api_key)
