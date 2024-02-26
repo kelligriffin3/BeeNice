@@ -109,6 +109,27 @@ function saveSettings() {
 
   // You can perform additional operations with the 'settings' object here
   console.log(settings);
+
+  // Save new settings to Flask
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/set_thresholds", true);
+  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhr.send(JSON.stringify(settings));
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status !== 200) {
+        //location.reload(); // Reload the page
+        console.error('Failed to save settings');
+      } else{
+        console.log("Settings saved");
+        var response = JSON.parse(xhr.responseText);
+        console.log("Message:", response.message);
+        console.log("New Threshold:", response.new_threshold);
+        // Post message on screen letting user know about success
+        document.getElementById('saveMessage').textContent = "Settings Saved!";
+      }
+    }
+  }; 
 }
 
 // Routes back to home page when button clicked

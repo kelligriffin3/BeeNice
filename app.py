@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 curr_comments = []
 alt_comments = []
+current_attributes = {'TOXICITY':0.6}
 curr_sentiment = None # True if nice, False if mean 
 summary = ""
 
@@ -27,7 +28,7 @@ def add_comment():
     new_comment = data['comment']
 
     # Check comment sentiment here!
-    curr_sentiment = is_nice(new_comment)
+    curr_sentiment = is_nice(new_comment, {'TOXICITY': '0.5'})
     
     if not curr_sentiment:
         alt_comments = get_alt_comments(new_comment)
@@ -36,6 +37,14 @@ def add_comment():
         curr_comments.append(new_comment)
 
     return jsonify({'message': 'Comment added successfully'}), 200
+
+@app.route('/set_thresholds', methods=['POST'])
+def set_thresholds():
+    data = request.get_json()
+    new_attr = data
+    global current_attributes
+    current_attributes = new_attr
+    return jsonify({'message': 'New thresholds set successfully', 'new_threshold': current_attributes}), 200
 
 @app.route('/clear_comments', methods=['DELETE'])
 def clear_comments():

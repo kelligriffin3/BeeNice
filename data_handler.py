@@ -14,10 +14,6 @@ api_key = os.getenv("OPENAI_API_KEY")
 huggingface_api_key = os.getenv("HUGGING_FACE_API_TOKEN")
 perspective_api_key = os.getenv("PERSPECTIVE_API_KEY")
 
-# For hugging face api keys
-API_URL = "https://api-inference.huggingface.co/models/KoalaAI/OffensiveSpeechDetector"
-headers = {"Authorization": f"Bearer {huggingface_api_key}"}
-
 # Initialize client for perspectiveAPI analyzer
 client = discovery.build(
   "commentanalyzer",
@@ -28,11 +24,16 @@ client = discovery.build(
 )
 
 # Checks the sentiment of a comment
-# Input: string
+# Inputs: comment (string),
+#         dictionary mapping attribute to threshold {'TOXICITY':0.5, 'INSULT', 0.7}
 # Output: True if positive sentiement, else False
-def is_nice(comment):
+def is_nice(comment, threshold_dict):
 
-    request_dict = {'TOXICITY': {}}
+    # Convert threshold values to floats
+    threshold_dict = {key: float(value) for key, value in threshold_dict.items()}
+
+    # Create request_dict mapping each key in threshold_dict to an empty dictionary
+    request_dict = {key: {} for key in threshold_dict}
 
     analyze_request = {
         'comment': { 'text': comment },
@@ -41,13 +42,13 @@ def is_nice(comment):
 
     response = client.comments().analyze(body=analyze_request).execute()
 
-    tox_score = response["attributeScores"]["TOXICITY"]['summaryScore']['value']
-    print(tox_score)
+    # Ensure that each requested attribute is below the specified threshold
+    for attribute, threshold in threshold_dict.items():
+        attribute_score = response["attributeScores"][attribute]['summaryScore']['value']
+        if attribute_score > threshold:
+            return False
 
-    if tox_score > 0.5:
-        return False
-    else:
-        return True
+    return True
 
     
 # Generate alternative comments using LLM
@@ -62,11 +63,9 @@ def get_alt_comments(comment):
     messages=[
         {"role": "system", "content": "You are moderating a comment section of a controversal news article. Give a comma separated list of 2-3 ways of rewriting the comment. The comment should be more polite yet still retain the same sentiment and ideas."},
         {"role": "user", "content": comment}
-    ]
-    )
+    ])
 
     response = completion.choices[0].message.content.split("\n")
-
     return response
 
 # Summarize main points of current comment threat
@@ -84,9 +83,7 @@ def summarize_thread(comments):
     messages=[
         {"role": "system", "content": "You are moderating a comment section of a controversal news article. Summarize the sentiment of the following comments"},
         {"role": "user", "content": comments_string} 
-    ]
-    )
+    ])
 
     response = completion.choices[0].message.content
-
     return response
