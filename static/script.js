@@ -34,3 +34,20 @@ function summarizeComments() {
       }
     };
   }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get the slider element
+    var slider = document.getElementById('sentimentSlider');
+    // Get the display element
+    var display = document.getElementById('sliderValueDisplay');
+
+    // Update the display initially
+    display.textContent = slider.value;
+
+    // Add event listener for input event
+    slider.addEventListener('input', function () {
+        // Update the display with the current slider value
+        display.textContent = slider.value;
+    });
+});
+
