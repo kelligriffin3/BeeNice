@@ -1,3 +1,6 @@
+// 
+// Handlers for BeeNice.html
+//
 function postComment() {
     var commentInput = document.getElementById("commentInput").value;
     var xhr = new XMLHttpRequest();
@@ -35,7 +38,17 @@ function summarizeComments() {
     };
   }
 
+// Routes to settings page when button clicked
+function goToSettings() {
+    window.location.href = "/settings";
+  };
 
+//
+// Handlers for Settings.html
+//
+
+// Event listener for when a slider element is changed
+// Will continuously display the slider value
 document.addEventListener('DOMContentLoaded', function () {
   // Get all slider elements
   var sliders = document.querySelectorAll('input[type="range"]');
@@ -98,10 +111,7 @@ function saveSettings() {
   console.log(settings);
 }
 
-function goToSettings() {
-  window.location.href = "/settings";
-};
-
+// Routes back to home page when button clicked
 function goHome() {
   window.location.href = "/";
 };
