@@ -28,7 +28,7 @@ def add_comment():
     new_comment = data['comment']
 
     # Check comment sentiment here!
-    curr_sentiment = is_nice(new_comment, {'TOXICITY': '0.5'})
+    curr_sentiment = is_nice(new_comment, current_attributes)
     
     if not curr_sentiment:
         alt_comments = get_alt_comments(new_comment)

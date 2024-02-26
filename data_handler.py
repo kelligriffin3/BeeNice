@@ -29,6 +29,9 @@ client = discovery.build(
 # Output: True if positive sentiement, else False
 def is_nice(comment, threshold_dict):
 
+    if not threshold_dict:
+        return True
+
     # Convert threshold values to floats
     threshold_dict = {key: float(value) for key, value in threshold_dict.items()}
 
