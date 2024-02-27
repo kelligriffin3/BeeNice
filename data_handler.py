@@ -79,10 +79,24 @@ def get_alt_comments(comment, previous_comments, article_contents, threshold_dic
 
     # Extract the alternative comments from the response
     response = completion.choices[0].message.content
-    alternative_comments = [line.strip() for line in response.split('\n') if line.strip()]
+    alternative_comments = [line.lstrip('1234567890-.').strip() for line in response.split('\n') if line.strip()]
 
     # Make sure that the list of alternative comments meets appropiate thresholds.
     alternative_comments = [com for com in alternative_comments if is_nice(com, threshold_dict)]
+
+    # Ensure that there are at least 2 alternative comments
+    while len(alternative_comments) < 2:
+        # Generate additional alternative comment
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": prompt},
+            ])
+        response = completion.choices[0].message.content
+        new_alternative_comments = [line.lstrip('1234567890-.').strip() for line in response.split('\n') if line.strip()]
+        # Filter and append new alternative comments
+        alternative_comments.extend([com for com in new_alternative_comments if is_nice(com, threshold_dict)])
+
 
     return alternative_comments
 
