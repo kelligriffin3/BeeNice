@@ -52,24 +52,39 @@ def is_nice(comment, threshold_dict):
             return False
 
     return True
-
     
 # Generate alternative comments using LLM
 # Input: string
 # Output: list of strings (each element is alternative repsonse)
-def get_alt_comments(comment):
+def get_alt_comments(comment, previous_comments, article_contents, threshold_dict):
 
     client = OpenAI(api_key=api_key)
 
-    completion = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": "You are moderating a comment section of a controversal news article. Give a comma separated list of 2-3 ways of rewriting the comment. The comment should be more polite yet still retain the same sentiment and ideas."},
-        {"role": "user", "content": comment}
-    ])
+    # Construct the prompt with article contents and previous comments
+    prompt = f"You are moderating the comment section of a controversial news article.\n"
 
-    response = completion.choices[0].message.content.split("\n")
-    return response
+    # Include previous comments if they exist
+    if previous_comments:
+        prompt += "Here are the previous comments:\n"
+        for prev_comment in previous_comments:
+            prompt += f"- {prev_comment}\n"
+
+    prompt += f"\nArticle contents: {article_contents}\n\nGive a comma separated list of 2-3 ways of rewriting the comment to facilitate better conversation, while still maintaing the same ideas of the original comment.\n\nComment: {comment}"
+    # Generate alternative comments
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": prompt},
+        ])
+
+    # Extract the alternative comments from the response
+    response = completion.choices[0].message.content
+    alternative_comments = [line.strip() for line in response.split('\n') if line.strip()]
+
+    # Make sure that the list of alternative comments meets appropiate thresholds.
+    alternative_comments = [com for com in alternative_comments if is_nice(com, threshold_dict)]
+
+    return alternative_comments
 
 # Summarize main points of current comment threat
 # Input: list of comments
