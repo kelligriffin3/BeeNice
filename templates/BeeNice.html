@@ -36,14 +36,18 @@
         <b>Consider these ways to rewrite your sentence:</b>
         <ol>
           {% for c in alt_comments %}
-            <li>{{ c }}</li>
+            <p><li>{{ c }}</li></p>
           {% endfor %}
         </ol>
       {% endif %}
     </div>
   </div>
-  <br>
-
+  <div class="allStarts">
+    <div class="senStart">Interesting to see how this decision could impact...</div>
+    <div class="senStart">I never thought about the legal side of fertility care until...</div>
+    <div class="senStart">It's fascinating yet concerning how the law views embryos as...</div>
+ </div>
+ <br>
   <textarea id="commentInput" class="text-box"></textarea>
   <button onclick="postComment()">Post Comment</button>
   <br>
@@ -55,8 +59,8 @@
     {% endif %}
     {% if summary != "" %}
       <br>
-      <b>Summary of comment thread</b>
-      <p>{{ summary }}</p>
+      <p><b>Summary of comment thread</b></p>
+      <p class="summary">{{ summary }}</p>
 
     {% endif %}
 </body>

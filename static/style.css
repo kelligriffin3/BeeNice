@@ -36,3 +36,30 @@
 button {
   vertical-align: top; /* Align the buttons to the top of the line */
 }
+
+.senStart {
+  display: inline-block;
+  border-right: 1px solid #ccc; /* Adds a vertical line between divs */
+  padding-right: 5px; /* Adds some space between divs */
+  margin-right: 5px; /* Adds some space between divs */
+  width: 208px; /* Set a fixed width for each sentence starter */
+  word-wrap: break-word; /* Allows long words to break and wrap onto the next line */
+  white-space: normal; /* Allows text to wrap onto the next line */
+}
+
+/* Ensures the last div does not have a vertical line */
+.senStart:last-child {
+  border-right: none;
+}
+
+.comments.box div {
+  margin-bottom: 10px; /* Adjust this value to increase or decrease the space between comments */
+}
+
+/* Add this CSS to limit the width of the summary text */
+.summary {
+  max-width: 600px; /* Adjust the width according to your preference */
+  margin-left: 50px; /* Center the summary text */
+}
+
+

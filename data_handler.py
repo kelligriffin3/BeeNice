@@ -61,7 +61,7 @@ def get_alt_comments(comment, previous_comments, article_contents, threshold_dic
     client = OpenAI(api_key=api_key)
 
     # Construct the prompt with article contents and previous comments
-    prompt = f"You are moderating the comment section of a controversial news article.\n"
+    prompt = f"You are moderating the comment section of a controversial news article on a social media platform.\n"
 
     # Include previous comments if they exist
     if previous_comments:
